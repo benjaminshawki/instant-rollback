@@ -1,14 +1,14 @@
-# Implementing Instant Rollback with Docker, Traefik, and GitLab CI/CD{- .unnumbered}
-## Overview{- .unnumbered}
+# Implementing Instant Rollback with Docker, Traefik, and GitLab CI/CD
+## Overview
 This section presents a comprehensive guide on setting up an instant rollback feature using [Docker](https://docs.docker.com/) for containerization, [Traefik](https://doc.traefik.io/traefik/) as a reverse proxy and load balancer, and [GitLab CI/CD](https://docs.gitlab.com/ee/topics/build_your_application.html) for continuous integration and deployment.
 The goal is to ensure minimal downtime and maintain data integrity when rolling back to a previous, stable version of software in the event of a failure.
 
-## Docker Configuration{- .unnumbered} 
+## Docker Configuration 
 The docker-compose.prod.yml file defines the Docker services, including the Traefik reverse proxy and the placeholder for the frontend application. Traefik is configured to automatically generate and renew SSL certificates using Let's Encrypt, ensuring secure connections. The setup outlines how each service is containerized, emphasizing the Traefik configuration for secure routing and SSL termination.
 
 Additionally, the configuration introduces automatic HTTP to HTTPS redirections, ensuring all traffic to your applications is securely encrypted. Furthermore, the configuration incorporates www trimming, redirecting requests from `www.example.com` to `example.com`, streamlining user access and simplifying domain management.
 
-### docker-compose.prod.yml{- .unnumbered}
+### docker-compose.prod.yml
 ~~~~~yml
 version: '3.9'
 
@@ -101,10 +101,10 @@ _Key Components:_
 : Utilizing Traefik's redirectregex middleware, the setup automatically handles requests to `www.` subdomains by redirecting them to the non-www version of the URL, enhancing SEO and user experience.
 
 
-## GitLab CI/CD Pipeline{- .unnumbered}
+## GitLab CI/CD Pipeline
 The .gitlab-ci.yml file demonstrates the continuous integration and deployment process. It includes stages for building the Docker images and deploying them to the production environment. The deployment stage dynamically updates the docker-compose.prod.yml file to reflect the current commit SHA, facilitating versioning and rollback.
 
-### .gitlab-ci.yml{- .unnumbered}
+### .gitlab-ci.yml
 ~~~~~yml
 # CI/CD Pipeline Configuration example for a containerized application with Docker, Traefik, and GitLab CI/CD.
 
@@ -208,7 +208,7 @@ _Pipeline Stages:_
 ## Automated Rollback Script{- .unnumbered }
 The scripts/make-sha-root-domain.sh script facilitates the instant rollback process. By specifying the commit SHA of the version to rollback to, this script adjusts the Traefik routing rules to direct traffic to the container associated with that SHA. This mechanism allows for immediate switchovers without downtime.
 
-### scripts/make-sha-root-domain.sh{- .unnumbered}
+### scripts/make-sha-root-domain.sh
 ~~~~~sh 
 #!/usr/bin/env bash
 
@@ -279,7 +279,7 @@ _Script Features:_
 - No Downtime:
 : Traffic rerouting happens instantaneously, maintaining user access to the application without interruptions.
 
-## Integration and Testing{- .unnumbered}
+## Integration and Testing
 The integration of Docker, Traefik, and GitLab CI/CD creates a robust environment for deploying and managing applications with the flexibility to rollback instantly. Testing this setup involves deploying multiple versions of an application, then triggering rollbacks to ensure the system reacts as expected.
 
 _Testing Considerations:_
@@ -289,7 +289,7 @@ _Testing Considerations:_
 - Rollback Scenarios:
 : Simulate various failure scenarios to test the rollback mechanism's effectiveness, including immediate rollbacks after deployment and reverting to versions several deployments past.
 
-## Prerequisites{- .unnumbered}
+## Prerequisites
 Before diving into the implementation of the instant rollback feature, it's crucial to ensure that the Virtual Private Server (VPS) is properly configured with the necessary tools and software. This section outlines the requirements and provides guidance on preparing the system for deployment.
 
 It's also important to ensure your DNS settings are correctly configured to support the instant rollback feature and HTTPS redirections. Specifically, a wildcard DNS record (e.g., `*.example.com`) should be in place to allow for the dynamic handling of subdomains through Traefik, facilitating seamless transitions between different application versions.
@@ -303,7 +303,7 @@ This is an example of a simple setup:
 | A | *.example.com | 12.345.67.890 |
 | CNAME | www.example.com | example.com |
 
-### Essential Tools and Software{- .unnumbered}
+### Essential Tools and Software
 - Docker:
 : Docker must be installed both on the VPS and the local development machine. Docker facilitates the creation, deployment, and management of containerized applications, making it easier to manage dependencies and streamline the deployment process.
 
@@ -319,7 +319,7 @@ This is an example of a simple setup:
 - GitLab Runner:
 : If GitLab CI/CD is used for automation, a GitLab Runner must be installed and configured either on the VPS or on a dedicated CI/CD server. The Runner executes the jobs defined in the .gitlab-ci.yml file.
 
-### Preparing the Environment{- .unnumbered}
+### Preparing the Environment
 1. Install Docker and Docker Compose:
 : Follow the official Docker documentation to install Docker and Docker Compose on your VPS and local development machine.
 
@@ -332,7 +332,7 @@ This is an example of a simple setup:
 1. Set Up GitLab Runner:
 : Install GitLab Runner according to the instructions provided in the GitLab documentation. Register the Runner with your GitLab project to execute the CI/CD pipeline jobs.
 
-### Verifying the Setup{- .unnumbered}
+### Verifying the Setup
 Before proceeding with the deployment, verify that all required tools are correctly installed and configured:
 
 - Run the following to check the installations.
@@ -344,7 +344,7 @@ Before proceeding with the deployment, verify that all required tools are correc
 
 With these prerequisites in place, you're well-prepared to implement the instant rollback feature using Docker, Traefik, and GitLab CI/CD. This foundation ensures a smooth and efficient deployment process, minimizing downtime and enhancing the overall reliability of the system.
 
-## What's Next?{- .unnumbered}
+## What's Next?
 The instant rollback feature is a powerful tool for maintaining application stability and ensuring a seamless user experience. By combining Docker, Traefik, and GitLab CI/CD, you've established a deployment pipeline that supports rapid rollbacks to previous versions, reducing the impact of failures and errors.
 
 To further enhance the rollback process, consider implementing a monitoring system that triggers rollbacks automatically based on predefined conditions, setting up alerts for critical events, provide a user-friendly interface for managing deployments, and developing a custom CLI for executing rollback commands.
